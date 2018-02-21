@@ -35,7 +35,7 @@ def findSwitches(turn,other,array):
 
 	for x in range(len(backArray)):
 		if backArray[x] == other:
-			tempChanges.append(newPieceLoc-x-1)
+			tempChanges.append((x+1)*-1)
 		if backArray[x] == turn:
 			foundTurn = True
 			break
@@ -48,7 +48,7 @@ def findSwitches(turn,other,array):
 
 	for x in range(len(forwardArray)):
 		if forwardArray[x] == other:
-			tempChanges.append(newPieceLoc+x)
+			tempChanges.append(x)
 		if forwardArray[x] == turn:
 			foundTurn = True
 			break
@@ -60,7 +60,6 @@ def findSwitches(turn,other,array):
 		legalMove = True
 
 	return [legalMove,changeLocs]
-
 
 
 def makeMove(board,move,turn):
@@ -96,13 +95,20 @@ def makeMove(board,move,turn):
 
 	if not legalMove:
 		print "Illegal Move: Nothing flipped"
+		#board[move[0]][move[1]] = 0
 		return board
 
 	for c in colResults[1]:
-		board[c][move[1]] = turn
+		board[move[0]+c][move[1]] = turn
 
 	for r in rowResults[1]:
-		board[move[0]][r] = turn
+		board[move[0]][move[1]+r] = turn
+
+	for dlr in diagLeftRightResults[1]:
+		board[move[0]+dlr][move[1]+dlr] = turn
+
+	for drl in diagRightLeftResults[1]:
+		board[move[0]+drl][move[1]-drl] = turn
 
 	
 	board[move[0]][move[1]] = turn
@@ -118,5 +124,11 @@ displayBoard(board)
 board = makeMove(board,(3,1),white)
 displayBoard(board)
 board = makeMove(board,(4,2),black)
+displayBoard(board)
+board = makeMove(board,(1,3),white)
+displayBoard(board)
+board = makeMove(board,(3,4),black)
+displayBoard(board)
+board = makeMove(board,(3,5),white)
 displayBoard(board)
 
