@@ -1,8 +1,18 @@
 import numpy as np
+import pygame
 
 boardSide = 6
 black = 1
 white = 2
+
+
+(width, height) = (600, 600)
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption('Reversi')
+
+block_size = width/(boardSide+2)
+radius = block_size/3
+offset = (height-(block_size*boardSide))/2
 
 def setUp():
 	#for the board 0 is empty, 1 is black, and 2 is white
@@ -121,19 +131,43 @@ def makeMove(board,move,turn):
 	print str(turn)+"'s turn successful"
 	return other
 
+def pygameDisplay(board):
+	screen.fill((255,255,255))
+	for x in range(boardSide):
+		for y in range(boardSide):
+			rect = pygame.Rect(offset+x*block_size,offset+y*block_size, block_size, block_size)
+			pygame.draw.rect(screen, (0,0,0), rect, 1)
+
+	for x in range(boardSide):
+		for y in range(boardSide):
+			piece = board[x][y]
+			if piece == 1:
+				pygame.draw.circle(screen, (0,0,0), (offset+(block_size/2)+x*block_size,offset+(block_size/2)+y*block_size), radius)
+			if piece == 2:
+				pygame.draw.circle(screen, (0,0,0), (offset+(block_size/2)+x*block_size,offset+(block_size/2)+y*block_size), radius,2)
+
+
+
 
 board = setUp()
 displayBoard(board)
-turn = makeMove(board,(1,2),black)
-displayBoard(board)
-turn = makeMove(board,(3,1),turn)
-displayBoard(board)
-turn = makeMove(board,(4,2),turn)
-displayBoard(board)
-turn = makeMove(board,(1,3),turn)
-displayBoard(board)
-turn = makeMove(board,(3,4),turn)
-displayBoard(board)
-turn = makeMove(board,(3,5),turn)
-displayBoard(board)
+
+pygameDisplay(board)
+pygame.display.flip()
+
+running = True
+turn = black
+while running:
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			running = False
+		if event.type == pygame.MOUSEBUTTONUP:
+			pos = pygame.mouse.get_pos()
+			xLoc = (pos[0]-offset)/block_size
+			yLoc = (pos[1]-offset)/block_size
+			turn = makeMove(board,(xLoc,yLoc),turn)
+			pygameDisplay(board)
+			pygame.display.flip() 
+
+	
 
