@@ -1,12 +1,14 @@
 import numpy as np
 import pygame
 
-boardSide = 6
+boardSide = 4
 empty = 0
 black = 1
 white = 2
 testSpot = 3
 legalSpot = 9
+
+gameOver = False
 
 pygame.init()
 
@@ -149,7 +151,7 @@ def makeMove(board,move,turn,legalList):
 	print str(turn)+"'s turn successful"
 	return [other,board]
 
-def pygameDisplay(board):
+def pygameDisplay(board,gameOver,turn):
 	screen.fill((255,255,255))
 
 	numBlack = 0
@@ -180,15 +182,30 @@ def pygameDisplay(board):
 	text = font.render("Black: "+str(numBlack)+" White: "+str(numWhite), 1, (0,0,0))
 	screen.blit(text,[width/2-offset*2,offset/3])
 
+	if not gameOver:
+		if turn == black:
+			text = font.render("Black's Turn", 1, (0,0,0))
+		else:
+			text = font.render("White's Turn", 1, (0,0,0))
+		screen.blit(text,[width/2-offset,height-offset/1.5])
+
+
+	if numBlack+numWhite == boardSide**2 or gameOver:
+		if numBlack > numWhite:
+			text = font.render("Black Wins!", 1, (0,0,0))
+		elif numWhite > numWhite:
+			text = font.render("White Wins!", 1, (0,0,0))
+		else:
+			text = font.render("It's a Tie!", 1, (0,0,0))
+		screen.blit(text,[width/2-offset,height-offset/1.5])
 
 
 running = True
-noMovesLast = False
 turn = black
 
 board = setUp()
 legalList = findLegal(board,turn)
-pygameDisplay(board)
+pygameDisplay(board,gameOver,turn)
 pygame.display.flip()
 
 while running:
@@ -202,21 +219,17 @@ while running:
 			[turn,board] = makeMove(board,[xLoc,yLoc],turn,legalList)
 			legalList = findLegal(board,turn)
 			if len(legalList) == 0:
-				if noMovesLast:
-					print "Game over"
-					running = False
+				print "No Moves for",turn
+				if turn == black:
+					turn = white
 				else:
-					print "No Moves for",turn
-					noMovesLast = True
-					if turn == black:
-						turn = white
-					else:
-						turn = black
-			elif noMovesLast:
-				noMovesLast = False
-			legalList = findLegal(board,turn)
-			pygameDisplay(board)
-			pygame.display.flip() 
+					turn = black
+				legalList = findLegal(board,turn)
+				if len(legalList) == 0:
+					gameOver = True
+
+			pygameDisplay(board,gameOver,turn)
+			pygame.display.flip()
 
 	
 
