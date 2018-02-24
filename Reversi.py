@@ -1,8 +1,15 @@
 import numpy as np
+import random
 
-boardSide = 6
+boardSide = 8
+empty = 0
 black = 1
 white = 2
+testSpot = 3
+legalSpot = 9
+
+gameOver = False
+
 
 def setUp():
 	#for the board 0 is empty, 1 is black, and 2 is white
@@ -22,7 +29,7 @@ def displayBoard(board):
 
 def findSwitches(turn,other,array):
 
-	newPieceLoc = np.where(array == 3)[0][0]
+	newPieceLoc = np.where(array == testSpot)[0][0]
 
 	legalMove = False
 	changeLocs = []
@@ -39,7 +46,7 @@ def findSwitches(turn,other,array):
 		elif backArray[x] == turn:
 			foundTurn = True
 			break
-		elif backArray[x] == 0:
+		elif backArray[x] == empty  or backArray[x] == legalSpot:
 			break
 
 
@@ -55,7 +62,7 @@ def findSwitches(turn,other,array):
 		elif forwardArray[x] == turn:
 			foundTurn = True
 			break
-		elif forwardArray[x] == 0:
+		elif forwardArray[x] == empty or forwardArray[x] == legalSpot:
 			break
 
 	if foundTurn:
@@ -66,74 +73,92 @@ def findSwitches(turn,other,array):
 
 	return [legalMove,changeLocs]
 
+def findLegal(board,turn):
 
-def makeMove(board,move,turn):
-	if board[move[0]][move[1]] == black or board[move[0]][move[1]] == white:
-		print "Illegal Move: You cannot place a piece on another piece"
-		return turn
+	legalList = []
 
-	board[move[0]][move[1]] = 3
+	for x in range(boardSide):
+		for y in range(boardSide):
+			if board[x][y] != black and board[x][y] != white:
+				board[x][y] = testSpot
+
+				if turn == black:
+					other = white
+				else:
+					other = black
+
+				col = board[:,y]
+				row = board[x]
+				diagLeftRight = board.diagonal(y-x)
+				diagRightLeft = np.fliplr(board).diagonal(((boardSide-1)-y)-x)
+
+				if findSwitches(turn,other,col)[0] or findSwitches(turn,other,row)[0] or findSwitches(turn,other,diagLeftRight)[0] or findSwitches(turn,other,diagRightLeft)[0]:
+					legalList.append([x,y])
+					board[x][y] = legalSpot
+				else:
+					board[x][y] = 0
+
+	return legalList
+
+
+def makeMove(board,move,turn,legalList):
+	if move not in legalList:
+		print "Illegal Move"
+		return [turn,board]
+
+	board[move[0]][move[1]] = testSpot
 
 	if turn == black:
 		other = white
 	else:
 		other = black
 
-	legalMove = False
-
 	col = board[:,move[1]]
 	row = board[move[0]]
 	diagLeftRight = board.diagonal(move[1]-move[0])
-	diagRightLeft = np.fliplr(board).diagonal((5-move[1])-move[0])
+	diagRightLeft = np.fliplr(board).diagonal(((boardSide-1)-move[1])-move[0])
 
-	# print "Column",col
-	# print "Row",row
-	# print "Diag \\",diagLeftRight
-	# print "Diag /",diagRightLeft
+	colChanges = findSwitches(turn,other,col)[1]
+	rowChanges = findSwitches(turn,other,row)[1]
+	diagLeftRightChanges = findSwitches(turn,other,diagLeftRight)[1]
+	diagRightLeftChanges= findSwitches(turn,other,diagRightLeft)[1]
 
-	colResults = findSwitches(turn,other,col)
-	rowResults = findSwitches(turn,other,row)
-	diagLeftRightResults = findSwitches(turn,other,diagLeftRight)
-	diagRightLeftResults = findSwitches(turn,other,diagRightLeft)
-
-	legalMove = colResults[0] or rowResults[0] or diagLeftRightResults[0] or diagRightLeftResults[0]
-
-	if not legalMove:
-		print "Illegal Move: Nothing flipped"
-		board[move[0]][move[1]] = 0
-		return turn
-
-	for c in colResults[1]:
+	for c in colChanges:
 		board[move[0]+c][move[1]] = turn
 
-	for r in rowResults[1]:
+	for r in rowChanges:
 		board[move[0]][move[1]+r] = turn
 
-	for dlr in diagLeftRightResults[1]:
+	for dlr in diagLeftRightChanges:
 		board[move[0]+dlr][move[1]+dlr] = turn
 
-	for drl in diagRightLeftResults[1]:
+	for drl in diagRightLeftChanges:
 		board[move[0]+drl][move[1]-drl] = turn
 
-	
 	board[move[0]][move[1]] = turn
 
 	print str(turn)+"'s turn successful"
-	return other
+	return [other,board]
 
+
+turn = black
 
 board = setUp()
+legalList = findLegal(board,turn)
 displayBoard(board)
-turn = makeMove(board,(1,2),black)
+[turn,board] = makeMove(board,[2,3],turn,legalList)
+legalList = findLegal(board,turn)
 displayBoard(board)
-turn = makeMove(board,(3,1),turn)
-displayBoard(board)
-turn = makeMove(board,(4,2),turn)
-displayBoard(board)
-turn = makeMove(board,(1,3),turn)
-displayBoard(board)
-turn = makeMove(board,(3,4),turn)
-displayBoard(board)
-turn = makeMove(board,(3,5),turn)
-displayBoard(board)
+
+#How you tell if game is over
+if len(legalList) == 0:
+	print "No Moves for",turn
+	if turn == black:
+		turn = white
+	else:
+		turn = black
+	legalList = findLegal(board,turn)
+	if len(legalList) == 0:
+		gameOver = True
+
 

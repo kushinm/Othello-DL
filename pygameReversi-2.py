@@ -1,7 +1,8 @@
 import numpy as np
 import pygame
+import random
 
-boardSide = 4
+boardSide = 8
 empty = 0
 black = 1
 white = 2
@@ -161,7 +162,7 @@ def pygameDisplay(board,gameOver,turn):
 		for y in range(boardSide):
 			if board[x][y] == legalSpot:
 				color = (0,255,0)
-				size = 2
+				size = 3
 			else:
 				color = (0,0,0)
 				size = 1
@@ -193,7 +194,7 @@ def pygameDisplay(board,gameOver,turn):
 	if numBlack+numWhite == boardSide**2 or gameOver:
 		if numBlack > numWhite:
 			text = font.render("Black Wins!", 1, (0,0,0))
-		elif numWhite > numWhite:
+		elif numWhite > numBlack:
 			text = font.render("White Wins!", 1, (0,0,0))
 		else:
 			text = font.render("It's a Tie!", 1, (0,0,0))
@@ -201,6 +202,9 @@ def pygameDisplay(board,gameOver,turn):
 
 
 running = True
+timer_event = pygame.USEREVENT + 1
+pygame.time.set_timer(timer_event, 100)
+
 turn = black
 
 board = setUp()
@@ -218,6 +222,23 @@ while running:
 			yLoc = (pos[1]-offset)/block_size
 			[turn,board] = makeMove(board,[xLoc,yLoc],turn,legalList)
 			legalList = findLegal(board,turn)
+			if len(legalList) == 0:
+				print "No Moves for",turn
+				if turn == black:
+					turn = white
+				else:
+					turn = black
+				legalList = findLegal(board,turn)
+				if len(legalList) == 0:
+					gameOver = True
+
+			pygameDisplay(board,gameOver,turn)
+			pygame.display.flip()
+		elif event.type == timer_event:
+			if len(legalList) > 0:
+				move = random.choice(legalList)
+				[turn,board] = makeMove(board,move,turn,legalList)
+				legalList = findLegal(board,turn)
 			if len(legalList) == 0:
 				print "No Moves for",turn
 				if turn == black:
