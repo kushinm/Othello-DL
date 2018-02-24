@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 import pygame
 import random
@@ -31,13 +32,13 @@ def setUp():
 	boardArray[mid+1][mid] = black
 	boardArray[mid][mid+1] = black
 	boardArray[mid+1][mid+1] = white
-	print "Starting Board"
+	print("Starting Board")
 	return boardArray
 
 def displayBoard(board):
 	for b in board:
-		print b
-	print 
+		print(b)
+	print()
 
 def findSwitches(turn,other,array):
 
@@ -115,7 +116,7 @@ def findLegal(board,turn):
 
 def makeMove(board,move,turn,legalList):
 	if move not in legalList:
-		print "Illegal Move"
+		print("Illegal Move")
 		return [turn,board]
 
 	board[move[0]][move[1]] = testSpot
@@ -149,7 +150,7 @@ def makeMove(board,move,turn,legalList):
 
 	board[move[0]][move[1]] = turn
 
-	print str(turn)+"'s turn successful"
+	print(str(turn)+"'s turn successful")
 	return [other,board]
 
 def pygameDisplay(board,gameOver,turn):
@@ -223,7 +224,7 @@ while running:
 			[turn,board] = makeMove(board,[xLoc,yLoc],turn,legalList)
 			legalList = findLegal(board,turn)
 			if len(legalList) == 0:
-				print "No Moves for",turn
+				print("No Moves for",turn)
 				if turn == black:
 					turn = white
 				else:
@@ -240,7 +241,7 @@ while running:
 				[turn,board] = makeMove(board,move,turn,legalList)
 				legalList = findLegal(board,turn)
 			if len(legalList) == 0:
-				print "No Moves for",turn
+				print("No Moves for",turn)
 				if turn == black:
 					turn = white
 				else:
