@@ -18,16 +18,16 @@ pygame.init()
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Reversi')
 
-block_size = width/(boardSide+2)
-radius = block_size/3
-offset = (height-(block_size*boardSide))/2
+block_size = int(width/(boardSide+2))
+radius = int(block_size/3)
+offset = int((height-(block_size*boardSide))/2)
 
 font = pygame.font.Font(None, int(offset/1.5))
 
 def setUp():
 	#for the board 0 is empty, 1 is black, and 2 is white
 	boardArray = np.zeros((boardSide,boardSide))
-	mid = boardSide/2 - 1
+	mid = int(boardSide/2 - 1)
 	boardArray[mid][mid] = white
 	boardArray[mid+1][mid] = black
 	boardArray[mid][mid+1] = black
@@ -176,10 +176,13 @@ def pygameDisplay(board,gameOver,turn):
 			piece = board[x][y]
 			if piece == black:
 				numBlack += 1
-				pygame.draw.circle(screen, (0,0,0), (offset+(block_size/2)+x*block_size,offset+(block_size/2)+y*block_size), radius)
+				pygame.draw.circle(screen, (0,0,0), (int(offset+(block_size/2)+x*block_size),int(offset+(block_size/2)+y*block_size)), radius)
 			if piece == white:
 				numWhite += 1
-				pygame.draw.circle(screen, (0,0,0), (offset+(block_size/2)+x*block_size,offset+(block_size/2)+y*block_size), radius,2)
+				print(offset+(block_size/2)+x*block_size)
+				print(offset+(block_size/2)+y*block_size)
+				print(radius)
+				pygame.draw.circle(screen, (0,0,0), (int(offset+(block_size/2)+x*block_size),int(offset+(block_size/2)+y*block_size)), radius,2)
 
 	text = font.render("Black: "+str(numBlack)+" White: "+str(numWhite), 1, (0,0,0))
 	screen.blit(text,[width/2-offset*2,offset/3])
@@ -219,8 +222,8 @@ while running:
 			running = False
 		if event.type == pygame.MOUSEBUTTONUP:
 			pos = pygame.mouse.get_pos()
-			xLoc = (pos[0]-offset)/block_size
-			yLoc = (pos[1]-offset)/block_size
+			xLoc = int((pos[0]-offset)/block_size)
+			yLoc = int((pos[1]-offset)/block_size)
 			[turn,board] = makeMove(board,[xLoc,yLoc],turn,legalList)
 			legalList = findLegal(board,turn)
 			if len(legalList) == 0:
@@ -235,23 +238,24 @@ while running:
 
 			pygameDisplay(board,gameOver,turn)
 			pygame.display.flip()
-		elif event.type == timer_event:
-			if len(legalList) > 0:
-				move = random.choice(legalList)
-				[turn,board] = makeMove(board,move,turn,legalList)
-				legalList = findLegal(board,turn)
-			if len(legalList) == 0:
-				print("No Moves for",turn)
-				if turn == black:
-					turn = white
-				else:
-					turn = black
-				legalList = findLegal(board,turn)
-				if len(legalList) == 0:
-					gameOver = True
 
-			pygameDisplay(board,gameOver,turn)
-			pygame.display.flip()
+		# elif event.type == timer_event:
+		# 	if len(legalList) > 0:
+		# 		move = random.choice(legalList)
+		# 		[turn,board] = makeMove(board,move,turn,legalList)
+		# 		legalList = findLegal(board,turn)
+		# 	if len(legalList) == 0:
+		# 		print("No Moves for",turn)
+		# 		if turn == black:
+		# 			turn = white
+		# 		else:
+		# 			turn = black
+		# 		legalList = findLegal(board,turn)
+		# 		if len(legalList) == 0:
+		# 			gameOver = True
+
+		# 	pygameDisplay(board,gameOver,turn)
+		# 	pygame.display.flip()
 
 	
 
