@@ -1,6 +1,6 @@
 # Learning to play Othello : A simplified self-play approach using a dense neural network
-Ben Tidswell, Gabriel Dell'Accio, Kushin Muckherjee
-Vassar College
+####Ben Tidswell, Gabriel Dell'Accio, Kushin Muckherjee
+####Vassar College
 
 -------------------
 -------------------
