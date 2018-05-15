@@ -66,7 +66,7 @@ It is significant to note that this performance comes about only through the net
 
 ## Running the Model
 
-### Downloaing Keras
+### Downloading Keras
 
 The following are useful resources for downloading and installing dependencies you will need to run this model on your own machine.
 https://ankivil.com/installing-keras-theano-and-dependencies-on-windows-10/	https://www.dataweekends.com/blog/2017/03/09/set-up-your-mac-for-deep-learning-with-python-keras-and-tensorflow
@@ -76,7 +76,7 @@ https://ankivil.com/installing-keras-theano-and-dependencies-on-windows-10/	http
 
 To run this you will also need pygame and numpy. We recommend using pip to get these. To download pip run “easy_install pip”. Once pip is installed run “pip install pygame” and “pip install numpy” to download pygame and numpy respectively. 
 
-### Playing Agaist the Network
+### Playing Against the Network
 
 With Keras, pygame, and numpy set up you are now ready to run code so that you can play Othello against the trained neural network. Simply run “python pygameOthelloNN.py” in the correct environment for Keras. Make sure that the weights file (Othello-Epoch-100000-Drop-0.05-Batch-8.hdf5) is in a folder called “Network Weights” as it saved her on Github. Click on the square where you want to make your move. All legal moves are outlined in blue. Once the game is over the winner is announced and you will need to rerun the code to play again.
 
