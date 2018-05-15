@@ -3,7 +3,7 @@
 ###### Vassar College
 
 -------------------
--------------------
+
 
 On March 15th 2016, Google Deepmind’s AlphaGo defeated Go grandmaster Lee Sedol. It was a historic moment for artificial intelligence, comparable to the miraculous defeat of Garry Kasparov at the hands of DeepBlue at Chess.
 
