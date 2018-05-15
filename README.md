@@ -1,5 +1,5 @@
 # Learning to play Othello : A simplified self-play approach using a dense neural network
-##### Ben Tidswell, Gabriel Dell'Accio, Kushin Muckherjee
+##### Ben Tidswell, Gabriel Dell'Accio, Kushin Mukherjee
 ###### Vassar College
 
 -------------------
@@ -65,6 +65,11 @@ It is significant to note that this performance comes about only through the net
 
 
 ## Running the Model
+### Accessing the Model
+
+The general model can be found on 
+https://colab.research.google.com/drive/1osAMLibCxw1SLgDOE3u0k8MPIT2E2VMB#scrollTo=iJa5bOKRMRYO&uniqifier=8
+
 
 ### Downloading Keras
 
