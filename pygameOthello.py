@@ -3,10 +3,10 @@ import numpy as np
 import pygame
 import random
 
-boardSide = 8
+boardSide = 6
 empty = 0
 black = 1
-white = 2
+white = -1
 testSpot = 3
 legalSpot = 9
 
@@ -95,10 +95,7 @@ def findLegal(board,turn):
 			if board[x][y] != black and board[x][y] != white:
 				board[x][y] = testSpot
 
-				if turn == black:
-					other = white
-				else:
-					other = black
+				other = -1*turn
 
 				col = board[:,y]
 				row = board[x]
@@ -121,10 +118,7 @@ def makeMove(board,move,turn,legalList):
 
 	board[move[0]][move[1]] = testSpot
 
-	if turn == black:
-		other = white
-	else:
-		other = black
+	other = -1*turn
 
 	col = board[:,move[1]]
 	row = board[move[0]]
@@ -162,13 +156,13 @@ def pygameDisplay(board,gameOver,turn):
 	for x in range(boardSide):
 		for y in range(boardSide):
 			if board[x][y] == legalSpot:
-				color = (0,255,0)
+				color = (2, 154, 255)
 				size = 3
 			else:
 				color = (0,0,0)
 				size = 1
 
-			rect = pygame.Rect(offset+x*block_size,offset+y*block_size, block_size, block_size)
+			rect = pygame.Rect(offset+y*block_size,offset+x*block_size, block_size, block_size)
 			pygame.draw.rect(screen, color, rect, size)
 
 	for x in range(boardSide):
@@ -176,13 +170,10 @@ def pygameDisplay(board,gameOver,turn):
 			piece = board[x][y]
 			if piece == black:
 				numBlack += 1
-				pygame.draw.circle(screen, (0,0,0), (int(offset+(block_size/2)+x*block_size),int(offset+(block_size/2)+y*block_size)), radius)
+				pygame.draw.circle(screen, (0,0,0), (int(offset+(block_size/2)+y*block_size),int(offset+(block_size/2)+x*block_size)), radius)
 			if piece == white:
 				numWhite += 1
-				print(offset+(block_size/2)+x*block_size)
-				print(offset+(block_size/2)+y*block_size)
-				print(radius)
-				pygame.draw.circle(screen, (0,0,0), (int(offset+(block_size/2)+x*block_size),int(offset+(block_size/2)+y*block_size)), radius,2)
+				pygame.draw.circle(screen, (0,0,0), (int(offset+(block_size/2)+y*block_size),int(offset+(block_size/2)+x*block_size)), radius,2)
 
 	text = font.render("Black: "+str(numBlack)+" White: "+str(numWhite), 1, (0,0,0))
 	screen.blit(text,[width/2-offset*2,offset/3])
@@ -204,7 +195,6 @@ def pygameDisplay(board,gameOver,turn):
 			text = font.render("It's a Tie!", 1, (0,0,0))
 		screen.blit(text,[width/2-offset,height-offset/1.5])
 
-
 running = True
 timer_event = pygame.USEREVENT + 1
 pygame.time.set_timer(timer_event, 100)
@@ -222,16 +212,13 @@ while running:
 			running = False
 		if event.type == pygame.MOUSEBUTTONUP:
 			pos = pygame.mouse.get_pos()
-			xLoc = int((pos[0]-offset)/block_size)
-			yLoc = int((pos[1]-offset)/block_size)
+			xLoc = int((pos[1]-offset)/block_size)
+			yLoc = int((pos[0]-offset)/block_size)
 			[turn,board] = makeMove(board,[xLoc,yLoc],turn,legalList)
 			legalList = findLegal(board,turn)
 			if len(legalList) == 0:
 				print("No Moves for",turn)
-				if turn == black:
-					turn = white
-				else:
-					turn = black
+				turn = -1*turn
 				legalList = findLegal(board,turn)
 				if len(legalList) == 0:
 					gameOver = True
